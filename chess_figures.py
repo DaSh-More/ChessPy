@@ -11,6 +11,12 @@ class Figure:
     price = 0
 
     @abstractmethod
+    def __init__(self, color: bool):
+        '''
+        Цвет задается при создании
+        '''
+
+    @abstractmethod
     def possible_moves(cell: str) -> list:
         ...
 
