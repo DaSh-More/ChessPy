@@ -2,12 +2,9 @@ from abc import abstractmethod
 
 
 class Figure:
-    color = ""
     name = ""
     eng_name = ""
     notation_name = ""
-    short_notation_name = ""
-    short_notation_name = ""
     price = 0
 
     @abstractmethod
@@ -15,7 +12,7 @@ class Figure:
         '''
         Цвет задается при создании
         '''
-
+        self.color = color
     @abstractmethod
     def possible_moves(cell: str) -> list:
         ...
@@ -23,3 +20,10 @@ class Figure:
     @abstractmethod
     def possible_takes(cell: str) -> list:
         ...
+
+class Pawn(Figure):
+    name = "Пешка"
+    eng_name = "Pawn"
+    notation_name = ""
+    price = 1
+    
