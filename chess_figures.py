@@ -7,7 +7,8 @@ with open("./src/img/symbols.json", encoding="utf-8") as f:
 
 
 def _existing_moves(moves: list) -> list:
-    return [move for move in moves if min(move) >= 0 and max(move) <= 7]
+    return [[gate for gate in move
+             if min(gate) >= 0 and max(gate) <= 7] for move in moves]
 
 # Фигуры: pawn, rook, knight, king, queen, bishop
 
@@ -28,14 +29,34 @@ class Figure:
 
     @abstractmethod
     def possible_moves(self, cell: list) -> list:
-        ...
+        """
+        Принимает координаты фигуры, возвращает список,
+            гда каждый элемент это список ходов
+
+
+        Args:
+            cell (list): Позиция фигуры [row, column]
+
+        Returns:
+            list: Возможные ходы [[row, column], [row, column], ...]
+        """
 
     @abstractmethod
     def possible_takes(self, cell: list) -> list:
-        ...
+        """
+        Принимает координаты фигуры, возвращает список,
+            гда каждый элемент это список ходов со съедением
+
+
+        Args:
+            cell (list): Позиция фигуры [row, column]
+
+        Returns:
+            list: Возможные ходы [[row, column], [row, column], ...]
+        """
 
     @abstractmethod
-    def __repr__(self):
+    def __str__(self):
         """
         Текстовое представление фигуры
 
@@ -44,9 +65,17 @@ class Figure:
         """
         return _str_images.get(self.notation_name, "  ")[self.color]
 
+    @abstractmethod
+    def __repr__(self):
+        return f"<Figure.{self.eng_name}.{('Black', 'White')[self.color]}>"
+
 
 class Void:
-    color = False
+    color = None
+    notation_name = ' '
+
+    def __repr__(self):
+        return ' '
 
 
 class Pawn(Figure):
@@ -56,18 +85,11 @@ class Pawn(Figure):
     price = 1
 
     def possible_moves(self, cell: list) -> list:
-        if cell[1] in (0, 7):
-            return []
-        if self.color:
-            if cell[0] == 6:
-                return [[cell[0] - 1, cell[1]], [cell[0] - 2, cell[1]]]
-            else:
-                return [[cell[0] - 1, cell[1]]]
-        else:
-            if cell[0] == 1:
-                return [[cell[0] + 1, cell[1]], [cell[0] + 2, cell[1]]]
-            else:
-                return [[cell[0], cell[1]-1]]
+        # Проходим от до 1 (+1 если на первой линии)
+        # Добавляя 1 если белый иначе отнимая
+        moves = [[cell[0]-(1+i)*(-1*self.color), cell[1]]
+                 for i in range(1 + (cell[0] in (1, 6)))]
+        return _existing_moves([moves])
 
     def possible_takes(self, cell: list) -> list:
         if self.color:
@@ -129,8 +151,12 @@ NOTATION = {
     "Q": Queen,
 }
 
+VOID = Void()
+
 if __name__ == "__main__":
-    # P = Pawn(color=True)
+    ...
+    P = Pawn(color=True)
+    print(P.possible_moves([1, 0]))
     # N = Knight(color=True)
     # print(N.possible_moves([6, 1]))
     # print(N)
