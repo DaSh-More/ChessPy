@@ -26,9 +26,11 @@ class Figure:
         '''
         self.color = color
 
+    @abstractmethod
     def possible_moves(self, cell: list) -> list:
         ...
 
+    @abstractmethod
     def possible_takes(self, cell: list) -> list:
         ...
 
@@ -41,6 +43,10 @@ class Figure:
             str: UTF-8 изображение фигуры
         """
         return _str_images.get(self.notation_name, "  ")[self.color]
+
+
+class Void:
+    color = False
 
 
 class Pawn(Figure):
@@ -77,7 +83,10 @@ class Knight(Figure):
     price = 3
 
     def possible_moves(self, cell: list) -> list:
-        return _existing_moves([[cell[0] + 1, cell[1] + 2], [cell[0] + 2, cell[1] - 1], [cell[0] - 1, cell[1] - 2], [cell[0]-2, cell[1] + 1]])
+        return _existing_moves([[cell[0] + 1, cell[1] + 2],
+                                [cell[0] + 2, cell[1] - 1],
+                                [cell[0] - 1, cell[1] - 2],
+                                [cell[0]-2, cell[1] + 1]])
 
     def possible_takes(self, cell: list) -> list:
         return self.possible_moves(cell)
@@ -121,8 +130,8 @@ NOTATION = {
 }
 
 if __name__ == "__main__":
-    P = Pawn(color=True)
-    N = Knight(color=True)
-    print(N.possible_moves([6, 1]))
-    print(N)
+    # P = Pawn(color=True)
+    # N = Knight(color=True)
+    # print(N.possible_moves([6, 1]))
+    # print(N)
     # print(a.possible_takes([6, 0]))
