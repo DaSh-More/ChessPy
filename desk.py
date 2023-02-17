@@ -40,7 +40,7 @@ class Desk:
         figure = self.__desk[*fromCoords]
         # Проверка на наличие фигуры
         if figure is VOID:
-            raise TypeError('Empty cage')
+            raise TypeError('Empty cell')
 
         # Проверка на цвет фигуры
         if figure.color != self.__move_color:
@@ -52,21 +52,21 @@ class Desk:
             # Если поле есть на пути
             if toCoords in path:
                 # Пройдем по всем полям списка
-                for cage in path:
+                for cell in path:
                     # Возьмем фигуру которая стоит на поле
-                    cage_figure = self.__desk[*cage]
+                    cell_figure = self.__desk[*cell]
                     # Если мы дошли до нужного поля
-                    if cage == toCoords:
+                    if cell == toCoords:
                         # Если там стоит фигура этого же цвета
-                        if figure.color == cage_figure.color:
+                        if figure.color == cell_figure.color:
                             raise TypeError('take figure color error')
                         self.__take(fromCoords, toCoords)
                         return True
                     # Если мы не дошли до нужного поля, проверяем наличие фигуры
-                    if cage_figure.color is not VOID:
+                    if cell_figure.color is not VOID:
                         return False
         else:
-            raise TypeError('to cage error')
+            raise TypeError('to cell error')
 
     def __take(self, fromCoords, toCoords):
         # Отмечаем фигуру как съеденую
@@ -86,7 +86,7 @@ class Desk:
         if self.__taken_figures[-1] is VOID:
             self.__taken_figures[-1].pop()
 
-    def __is_shah(self, color=None):
+    def __is_check(self, color=None):
         ...
 
     def __repr__(self) -> str:

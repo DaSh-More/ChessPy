@@ -28,28 +28,28 @@ class Figure:
         self.color = color
 
     @abstractmethod
-    def possible_moves(self, cell: list) -> list:
+    def possible_moves(self, coords: list) -> list:
         """
         Принимает координаты фигуры, возвращает список,
             гда каждый элемент это список ходов
 
 
         Args:
-            cell (list): Позиция фигуры [row, column]
+            coords (list): Позиция фигуры [row, column]
 
         Returns:
             list: Возможные ходы [[row, column], [row, column], ...]
         """
 
     @abstractmethod
-    def possible_takes(self, cell: list) -> list:
+    def possible_takes(self, coords: list) -> list:
         """
         Принимает координаты фигуры, возвращает список,
             гда каждый элемент это список ходов со съедением
 
 
         Args:
-            cell (list): Позиция фигуры [row, column]
+            coords (list): Позиция фигуры [row, column]
 
         Returns:
             list: Возможные ходы [[row, column], [row, column], ...]
@@ -84,18 +84,19 @@ class Pawn(Figure):
     notation_name = "P"
     price = 1
 
-    def possible_moves(self, cell: list) -> list:
+    def possible_moves(self, coords: list) -> list:
         # Проходим от до 1 (+1 если на первой линии)
         # Добавляя 1 если белый иначе отнимая
-        moves = [[cell[0]-(1+i)*(-1*self.color), cell[1]]
-                 for i in range(1 + (cell[0] in (1, 6)))]
+        #! Для черных не работает
+        moves = [[coords[0]-(1+i)*(-1*self.color), coords[1]]
+                 for i in range(1 + (coords[0] in (1, 6)))]
         return _existing_moves([moves])
 
-    def possible_takes(self, cell: list) -> list:
+    def possible_takes(self, coords: list) -> list:
         if self.color:
-            return _existing_moves([[cell[0] - 1, cell[1] - 1], [cell[0]-1, cell[1] + 1]])
+            return _existing_moves([[coords[0] - 1, coords[1] - 1], [coords[0]-1, coords[1] + 1]])
         else:
-            return _existing_moves([[cell[0] + 1, cell[1] + 1], [cell[0] + 1, cell[1] - 1]])
+            return _existing_moves([[coords[0] + 1, coords[1] + 1], [coords[0] + 1, coords[1] - 1]])
 
 
 class Knight(Figure):
@@ -104,14 +105,15 @@ class Knight(Figure):
     notation_name = "N"
     price = 3
 
-    def possible_moves(self, cell: list) -> list:
-        return _existing_moves([[cell[0] + 1, cell[1] + 2],
-                                [cell[0] + 2, cell[1] - 1],
-                                [cell[0] - 1, cell[1] - 2],
-                                [cell[0]-2, cell[1] + 1]])
+    def possible_moves(self, coords: list) -> list:
+        #! У коня больше ходов
+        return _existing_moves([[coords[0] + 1, coords[1] + 2],
+                                [coords[0] + 2, coords[1] - 1],
+                                [coords[0] - 1, coords[1] - 2],
+                                [coords[0]-2, coords[1] + 1]])
 
-    def possible_takes(self, cell: list) -> list:
-        return self.possible_moves(cell)
+    def possible_takes(self, coords: list) -> list:
+        return self.possible_moves(coords)
 
 
 class Rook(Figure):
@@ -155,8 +157,8 @@ VOID = Void()
 
 if __name__ == "__main__":
     ...
-    P = Pawn(color=True)
-    print(P.possible_moves([1, 0]))
+    P = Pawn(color=False)
+    print(P.possible_moves([6, 5]))
     # N = Knight(color=True)
     # print(N.possible_moves([6, 1]))
     # print(N)
