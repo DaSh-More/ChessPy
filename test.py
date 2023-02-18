@@ -1,42 +1,16 @@
-# from loguru import logger
-# import sys
-# config = {
-#     "handlers": [
-#         {"sink": sys.stdout, "format": "{time} - {message}"},
-#     ],
-#     "extra": {"user": "someone"}
-# }
-# logger.configure(**config)
-
-# # For libraries
-# logger.disable('my_library')
-# logger.info("No matter added sinks, this message is not displayed",
-#             name="my_library")
-# # logger.enable(None)
-# logger.info("This message however is propagated to the sinks",
-#             name="my_library")
+import requests as req
+from bs4 import BeautifulSoup as BS
 
 
-# def func(a, /, b, *c, d=None):
-#     ...
+headers = {
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.51 Safari/537.36',
+    "cookie": "__cf_bm=ZTlCq7g0bYAINpmyQ9IhqphXeYLj9.Hqgq0.oWO93Dg-1676747609-0-Ab4D44d/MKp4+XZ/TZaONO0mCXYkpWuAPm4N/utvBcKIAOdoO+XcomK8l/Zvk2gxBcqy+GwwDOQYrmzGgqEoO+fQv/QDixzK+JwRHivVap5/"
+}
 
-
-# print(f"{func.__code__.co_varnames = }",
-#       f"{func.__code__.co_argcount = }",
-#       f"{func.__code__.co_posonlyargcount = }",
-#       f"{func.__code__.co_kwonlyargcount = }",
-#       f"{func.__code__.co_qualname = }",
-#       sep='\n')
-
-# def test(a, b):
-#     return True
-
-
-# str.__le__ = test
-
-# print('a' >= 1)
-
-if a := 1:
-    ...
-
-print(a)
+link = "https://www.chess.com/chess-themes/pieces/neo/300/{}{}.png"
+for color in 'wb':
+    for figure in 'prnbqk':
+        print(link.format(color, figure))
+        image = req.get(link.format(color, figure), headers=headers).content
+        with open(f"./src/img/{color}{figure}.png", 'wb') as file:
+            file.write(image)

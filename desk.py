@@ -72,7 +72,7 @@ class Desk:
                             raise TypeError('take figure color error')
                         self.__take(fromCoords, toCoords)
                         return True
-                    # Если мы не дошли до нужного поля, проверяем наличие фигуры
+                    # Иначе проверяем наличие фигуры
                     if cell_figure.color is not VOID:
                         return False
         else:
@@ -97,6 +97,7 @@ class Desk:
             self.__taken_figures[-1].pop()
 
     def __is_check(self, color=None):
+        # TODO Сделать проверку на шах
         ...
 
     def __repr__(self) -> str:
