@@ -1,14 +1,17 @@
 from abc import abstractmethod
 import json
+from loguru import logger
 
+logger.disable("chess_figures")
 
 with open("./src/img/symbols.json", encoding="utf-8") as f:
     _str_images = json.load(f)
 
 
-def _existing_moves(moves: list) -> list:
-    return [[gate for gate in move
+def _validate_moves(moves: list) -> list:
+    cells = [[gate for gate in move
              if min(gate) >= 0 and max(gate) <= 7] for move in moves]
+    return [cell for cell in cells if cell]
 
 # Фигуры: pawn, rook, knight, king, queen, bishop
 
@@ -19,13 +22,15 @@ class Figure:
     notation_name = ""
     price = 0
 
-    @abstractmethod
     def __init__(self, color: bool):
         '''
         Цвет задается при создании
         белый = True
         '''
         self.color = color
+
+    def get_color(self):
+        return self.color*2-1
 
     @abstractmethod
     def possible_moves(self, coords: list) -> list:
@@ -55,7 +60,6 @@ class Figure:
             list: Возможные ходы [[row, column], [row, column], ...]
         """
 
-    @abstractmethod
     def __str__(self):
         """
         Текстовое представление фигуры
@@ -65,9 +69,11 @@ class Figure:
         """
         return _str_images.get(self.notation_name, "  ")[self.color]
 
-    @abstractmethod
     def __repr__(self):
         return f"<Figure.{self.eng_name}.{('Black', 'White')[self.color]}>"
+
+    def __bool__(self):
+        return True
 
 
 class Void:
@@ -76,6 +82,9 @@ class Void:
 
     def __repr__(self):
         return ' '
+
+    def __bool__(self):
+        return False
 
 
 class Pawn(Figure):
@@ -87,16 +96,15 @@ class Pawn(Figure):
     def possible_moves(self, coords: list) -> list:
         # Проходим от до 1 (+1 если на первой линии)
         # Добавляя 1 если белый иначе отнимая
-        #! Для черных не работает
-        moves = [[coords[0]-(1+i)*(-1*self.color), coords[1]]
+        moves = [[coords[0]+(1+i)*self.get_color(), coords[1]]
                  for i in range(1 + (coords[0] in (1, 6)))]
-        return _existing_moves([moves])
+        return _validate_moves([moves])
 
     def possible_takes(self, coords: list) -> list:
-        if self.color:
-            return _existing_moves([[coords[0] - 1, coords[1] - 1], [coords[0]-1, coords[1] + 1]])
-        else:
-            return _existing_moves([[coords[0] + 1, coords[1] + 1], [coords[0] + 1, coords[1] - 1]])
+        return _validate_moves([[[coords[0] + self.get_color(),
+                                  coords[1] - 1]],
+                                [[coords[0] + self.get_color(),
+                                  coords[1] + 1]]])
 
 
 class Knight(Figure):
@@ -106,8 +114,8 @@ class Knight(Figure):
     price = 3
 
     def possible_moves(self, coords: list) -> list:
-        #! У коня больше ходов
-        return _existing_moves([[coords[0] + 1, coords[1] + 2],
+        # TODO Прописать все коды у коня
+        return _validate_moves([[coords[0] + 1, coords[1] + 2],
                                 [coords[0] + 2, coords[1] - 1],
                                 [coords[0] - 1, coords[1] - 2],
                                 [coords[0]-2, coords[1] + 1]])
@@ -158,7 +166,7 @@ VOID = Void()
 if __name__ == "__main__":
     ...
     P = Pawn(color=False)
-    print(P.possible_moves([6, 5]))
+    print(P.possible_takes([6, 0]))
     # N = Knight(color=True)
     # print(N.possible_moves([6, 1]))
     # print(N)
