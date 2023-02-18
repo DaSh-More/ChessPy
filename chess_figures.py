@@ -9,8 +9,8 @@ with open("./src/img/symbols.json", encoding="utf-8") as f:
 
 
 def _validate_moves(moves: list) -> list:
-    cells = [[gate for gate in move
-             if min(gate) >= 0 and max(gate) <= 7] for move in moves]
+    cells = [[place for place in move
+             if min(place) >= 0 and max(place) <= 7] for move in moves]
     return [cell for cell in cells if cell]
 
 # Фигуры: pawn, rook, knight, king, queen, bishop
@@ -114,11 +114,10 @@ class Knight(Figure):
     price = 3
 
     def possible_moves(self, coords: list) -> list:
-        # TODO Прописать все коды у коня
-        return _validate_moves([[coords[0] + 1, coords[1] + 2],
-                                [coords[0] + 2, coords[1] - 1],
-                                [coords[0] - 1, coords[1] - 2],
-                                [coords[0]-2, coords[1] + 1]])
+        return _validate_moves([[[coords[0] + i, coords[1] + j]]
+                                for i in (-2, -1, 1, 2)
+                                for j in (-2, -1, 1, 2)
+                                if abs(i-j) in (3, 1)])
 
     def possible_takes(self, coords: list) -> list:
         return self.possible_moves(coords)
@@ -130,6 +129,15 @@ class Rook(Figure):
     notation_name = "R"
     price = 5
 
+    def possible_moves(self, coords: list) -> list:
+        return _validate_moves([[[coords[0] + i, coords[1]] for i in range(1, 8)],
+                                [[coords[0] - i, coords[1]] for i in range(1, 8)],
+                                [[coords[0], coords[1] + i] for i in range(1, 8)],
+                                [[coords[0], coords[1] - i] for i in range(1, 8)]])
+
+    def possible_takes(self, coords: list) -> list:
+        return self.possible_moves(coords)
+
 
 class Bishop(Figure):
     name = "Слон"
@@ -137,19 +145,40 @@ class Bishop(Figure):
     notation_name = "B"
     price = 3
 
+    def possible_moves(self, coords: list) -> list:
+        return _validate_moves([[[coords[0] + i, coords[1] + i] for i in range(1, 8)],
+                                [[coords[0] - i, coords[1] - i] for i in range(1, 8)],
+                                [[coords[0] + i, coords[1] - i] for i in range(1, 8)],
+                                [[coords[0] - i, coords[1] + i] for i in range(1, 8)]])
+
+    def possible_takes(self, coords: list) -> list:
+        return self.possible_moves(coords)
+
 
 class Queen(Figure):
-    name = "Королева"
+    name = "Ферзь"
     eng_name = "Queen"
     notation_name = "Q"
     price = 8
-
-
+    def possible_moves(self, coords: list) -> list:
+        return Rook.possible_moves(self,coords) + Bishop.possible_moves(self,coords)
+    def possible_takes(self, coords: list) -> list:
+        return self.possible_moves(coords)
+    
 class King(Figure):
     name = "Король"
     eng_name = "King"
     notation_name = "K"
     price = 0
+
+    def possible_moves(self, coords: list) -> list:
+        return _validate_moves([[[coords[0] + i, coords[1] + j]]
+                                for i in (-1, 0, 1)
+                                for j in (-1, 0, 1)
+                                if not(i == 0 and j == 0)])
+
+    def possible_takes(self, coords: list) -> list:
+        return self.possible_moves(coords)
 
 
 NOTATION = {
@@ -166,8 +195,14 @@ VOID = Void()
 if __name__ == "__main__":
     ...
     P = Pawn(color=False)
-    print(P.possible_takes([6, 0]))
-    # N = Knight(color=True)
-    # print(N.possible_moves([6, 1]))
-    # print(N)
-    # print(a.possible_takes([6, 0]))
+    # print(P.possible_moves([6, 0]))
+    N = Knight(color=True)
+    # print(N.possible_moves([4, 4]))
+    K = King(color=True)
+    # print(K.possible_moves([0, 5]))
+    R = Rook(color=True)
+    # print(R.possible_moves([0,0]))
+    B = Bishop(color=True)
+    # print(B.possible_moves([0, 0]))
+    Q = Queen(color = True)
+    print(Q.possible_moves([7,7]))
