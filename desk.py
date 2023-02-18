@@ -1,5 +1,6 @@
-import numpy as np
+from loguru import logger
 from chess_figures import NOTATION, VOID
+import numpy as np
 
 default_position = '00wr 01wn 02wb 03wq 04wk 05wb 06wn 07wr\
                     10wp 11wp 12wp 13wp 14wp 15wp 16wp 17wp\
@@ -37,6 +38,7 @@ class Desk:
             self.__desk[*cords] = NOTATION.get(fig[3])(fig[2] == 'W')
 
     def move(self, fromCoords, toCoords):
+        # TODO Задать типы ошибок
         figure = self.__desk[*fromCoords]
         # Проверка на наличие фигуры
         if figure is VOID:
@@ -46,9 +48,17 @@ class Desk:
         if figure.color != self.__move_color:
             raise TypeError('Figure color')
 
+        # Взятие или ход
+
+        cells = figure.possible_moves(fromCoords)
+        if to_figure := self.__desk[*toCoords]:
+            if to_figure.color == figure.color:
+                raise TypeError('take figure color error')
+            cells = figure.possible_takes(fromCoords)
+
         # Проходим по возможным путям
-        print(figure.__repr__(), toCoords, figure.possible_moves(fromCoords))
-        for path in figure.possible_moves(fromCoords):
+        logger.debug(figure.__repr__())
+        for path in cells:
             # Если поле есть на пути
             if toCoords in path:
                 # Пройдем по всем полям списка
@@ -76,7 +86,7 @@ class Desk:
         self.__desk[*fromCoords] = VOID
 
         # Если после нашего хода нам шах, отменяем ход
-        if self.__is_shah(self.__move_color):
+        if self.__is_check(self.__move_color):
             self.__desk[*fromCoords] = self.__desk[*toCoords]
             self.__desk[*toCoords] = self.__taken_figures.pop()
         else:
@@ -98,5 +108,6 @@ class Desk:
 
 if __name__ == "__main__":
     desk = Desk()
-    print(desk.move([1, 0], [2, 0]))
+    desk.move([1, 0], [2, 0])
+    desk.move([6, 0], [5, 0])
     print(desk)
