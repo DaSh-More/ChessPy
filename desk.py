@@ -23,6 +23,9 @@ class Desk:
     def move_color(self):
         return self.__move_color
 
+    def get_desk(self):
+        return self.__desk
+
     def __set_figures(self, positions):
         """
         Расставляет фигуры на доске
