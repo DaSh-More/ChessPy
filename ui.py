@@ -2,6 +2,7 @@ import pygame as pg
 from desk import Desk
 import numpy as np
 
+img_path = "./src/img/"
 pg.init()
 # Задаем размер окна
 screen = pg.display.set_mode((1200, 700))
@@ -26,7 +27,11 @@ class VisualDesk(Desk, pg.Surface):
                 pg.draw.rect(self, colors[(row+col) % 2],
                              (row*80, col*80, 80, 80))
 
-    def draw_figure(self, figure):
+    def draw_figure(self, figure, cords):
+        # TODO Сделать все фигуры объектами для рисования
+        # TODO у фигуры хранить координаты
+        pg.draw.rect(self, colors[(row+col) % 2],
+                     (row*80, col*80, 80, 80))
 
     def display_figures(self):
         self.draw_cells()

@@ -1,8 +1,12 @@
 from abc import abstractmethod
 import json
 from loguru import logger
+from pathlib import Path
+
 
 logger.disable("chess_figures")
+
+img_path = "./src/img/"
 
 with open("./src/img/symbols.json", encoding="utf-8") as f:
     _str_images = json.load(f)
@@ -32,6 +36,9 @@ class Figure:
     def get_color(self):
         return self.color*2-1
 
+    def get_image(self, ):
+        return Path(img_path) / f"{'bw'[self.color]}{self.notation_name}.png"
+
     @abstractmethod
     def possible_moves(self, coords: list) -> list:
         """
@@ -46,6 +53,7 @@ class Figure:
             list: Возможные ходы [[row, column], [row, column], ...]
         """
 
+    # TODO Реализовать по умолчанию
     @abstractmethod
     def possible_takes(self, coords: list) -> list:
         """
@@ -90,7 +98,7 @@ class Void:
 class Pawn(Figure):
     name = "Пешка"
     eng_name = "Pawn"
-    notation_name = "P"
+    notation_name = "p"
     price = 1
 
     def possible_moves(self, coords: list) -> list:
@@ -110,7 +118,7 @@ class Pawn(Figure):
 class Knight(Figure):
     name = "Конь"
     eng_name = "Knight"
-    notation_name = "N"
+    notation_name = "n"
     price = 3
 
     def possible_moves(self, coords: list) -> list:
@@ -126,13 +134,15 @@ class Knight(Figure):
 class Rook(Figure):
     name = "Башня"
     eng_name = "Rook"
-    notation_name = "R"
+    notation_name = "r"
     price = 5
 
     def possible_moves(self, coords: list) -> list:
         return _validate_moves([[[coords[0] + i, coords[1]] for i in range(1, 8)],
-                                [[coords[0] - i, coords[1]] for i in range(1, 8)],
-                                [[coords[0], coords[1] + i] for i in range(1, 8)],
+                                [[coords[0] - i, coords[1]]
+                                    for i in range(1, 8)],
+                                [[coords[0], coords[1] + i]
+                                    for i in range(1, 8)],
                                 [[coords[0], coords[1] - i] for i in range(1, 8)]])
 
     def possible_takes(self, coords: list) -> list:
@@ -142,13 +152,15 @@ class Rook(Figure):
 class Bishop(Figure):
     name = "Слон"
     eng_name = "Bishop"
-    notation_name = "B"
+    notation_name = "b"
     price = 3
 
     def possible_moves(self, coords: list) -> list:
         return _validate_moves([[[coords[0] + i, coords[1] + i] for i in range(1, 8)],
-                                [[coords[0] - i, coords[1] - i] for i in range(1, 8)],
-                                [[coords[0] + i, coords[1] - i] for i in range(1, 8)],
+                                [[coords[0] - i, coords[1] - i]
+                                    for i in range(1, 8)],
+                                [[coords[0] + i, coords[1] - i]
+                                    for i in range(1, 8)],
                                 [[coords[0] - i, coords[1] + i] for i in range(1, 8)]])
 
     def possible_takes(self, coords: list) -> list:
@@ -158,24 +170,27 @@ class Bishop(Figure):
 class Queen(Figure):
     name = "Ферзь"
     eng_name = "Queen"
-    notation_name = "Q"
+    notation_name = "q"
     price = 8
+
     def possible_moves(self, coords: list) -> list:
-        return Rook.possible_moves(self,coords) + Bishop.possible_moves(self,coords)
+        return Rook.possible_moves(self, coords) + Bishop.possible_moves(self, coords)
+
     def possible_takes(self, coords: list) -> list:
         return self.possible_moves(coords)
-    
+
+
 class King(Figure):
     name = "Король"
     eng_name = "King"
-    notation_name = "K"
+    notation_name = "k"
     price = 0
 
     def possible_moves(self, coords: list) -> list:
         return _validate_moves([[[coords[0] + i, coords[1] + j]]
                                 for i in (-1, 0, 1)
                                 for j in (-1, 0, 1)
-                                if not(i == 0 and j == 0)])
+                                if not (i == 0 and j == 0)])
 
     def possible_takes(self, coords: list) -> list:
         return self.possible_moves(coords)
@@ -204,5 +219,5 @@ if __name__ == "__main__":
     # print(R.possible_moves([0,0]))
     B = Bishop(color=True)
     # print(B.possible_moves([0, 0]))
-    Q = Queen(color = True)
-    print(Q.possible_moves([7,7]))
+    Q = Queen(color=True)
+    print(Q.possible_moves([7, 7]))
