@@ -2,6 +2,7 @@ from abc import abstractmethod
 import json
 from loguru import logger
 from pathlib import Path
+import pygame as pg
 
 
 logger.disable("chess_figures")
@@ -20,23 +21,47 @@ def _validate_moves(moves: list) -> list:
 # Фигуры: pawn, rook, knight, king, queen, bishop
 
 
-class Figure:
+class Figure(pg.sprite.Sprite):
     name = ""
     eng_name = ""
     notation_name = ""
     price = 0
 
-    def __init__(self, color: bool):
+    def __init__(self, color: bool, size=None):
         '''
         Цвет задается при создании
         белый = True
         '''
+        super().__init__()
         self.color = color
+        self.coords = [0, 0]
+        self.size = size
+        logger.debug(size)
+        if pg.mixer.get_init():
+            self.pg_init()
+
+    def pg_init(self):
+        self.image = pg.image.load(
+            self.get_image()).convert_alpha()
+        if self.size:
+            self.image = pg.transform.scale(self.image,
+                                            (self.size, self.size))
+        self.__rect = None
+
+    @property
+    def rect(self):
+        return self.__rect
+
+    @rect.getter
+    def rect(self):
+        return self.image.get_rect(
+            center=(self.coords[1]*self.size + self.size/2,
+                    self.size*8-self.coords[0]*self.size - self.size/2))
 
     def get_color(self):
         return self.color*2-1
 
-    def get_image(self, ):
+    def get_image(self):
         return Path(img_path) / f"{'bw'[self.color]}{self.notation_name}.png"
 
     @abstractmethod

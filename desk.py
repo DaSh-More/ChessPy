@@ -11,9 +11,9 @@ WHITE, BLACK = True, False
 
 
 class Desk:
-    def __init__(self, position=default_position):
+    def __init__(self, position=default_position, size=None):
         self.__desk = np.full((8, 8), VOID, dtype=object)
-        self.__set_figures(position)
+        self.__set_figures(position, size)
         self.__move_color = WHITE
         self.__taken_figures = []
 
@@ -26,7 +26,7 @@ class Desk:
     def get_desk(self):
         return self.__desk
 
-    def __set_figures(self, positions):
+    def __set_figures(self, positions, size):
         """
         Расставляет фигуры на доске
 
@@ -38,7 +38,9 @@ class Desk:
         for fig in positions:
             fig = fig.upper()
             cords = list(map(int, fig[:2]))
-            self.__desk[*cords] = NOTATION.get(fig[3])(fig[2] == 'W')
+            self.__desk[*cords] = NOTATION.get(fig[3])(fig[2] == 'W',
+                                                       size=size)
+            self.__desk[*cords].coords = cords
 
     def move(self, fromCoords, toCoords):
         # TODO Задать типы ошибок
@@ -92,8 +94,10 @@ class Desk:
         if self.__is_check(self.__move_color):
             self.__desk[*fromCoords] = self.__desk[*toCoords]
             self.__desk[*toCoords] = self.__taken_figures.pop()
+        # Если шаха нет
         else:
             self.__move_color = not self.__move_color
+            self.__desk[*toCoords].coords = toCoords
 
         # Удаляем из списка съеденых фигур пустое поле
         if self.__taken_figures[-1] is VOID:
