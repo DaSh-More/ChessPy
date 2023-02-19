@@ -1,22 +1,21 @@
 import pygame as pg
 from desk import Desk
 import numpy as np
+from loguru import logger
+logger.enable('chess_figures')
+
 
 img_path = "./src/img/"
 pg.init()
-# Задаем размер окна
 screen = pg.display.set_mode((1200, 700))
-# Создаем ообъект часов
 
-# pg.draw.rect(screen,
-#              (255, 255, 255),
-#              (20, 20, 100, 75))
+cell_size = 80
 
 
 class VisualDesk(Desk, pg.Surface):
     def __init__(self):
-        Desk.__init__(self)
-        pg.Surface.__init__(self, (640, 640))
+        Desk.__init__(self, size=cell_size)
+        pg.Surface.__init__(self, (cell_size*8, cell_size*8))
 
         self.display_figures()
 
@@ -25,17 +24,21 @@ class VisualDesk(Desk, pg.Surface):
         for row in range(8):
             for col in range(8):
                 pg.draw.rect(self, colors[(row+col) % 2],
-                             (row*80, col*80, 80, 80))
+                             (row*cell_size, col*cell_size,
+                              cell_size, cell_size))
 
-    def draw_figure(self, figure, cords):
-        # TODO Сделать все фигуры объектами для рисования
+    def __draw_figure(self, figure):
+
+        self.blit(figure.image, figure.rect)
+        logger.debug(figure.rect)
         # TODO у фигуры хранить координаты
-        pg.draw.rect(self, colors[(row+col) % 2],
-                     (row*80, col*80, 80, 80))
 
-    def display_figures(self):
+    def display_figures(self, mirror=False):
+        # TODO Сделать возможность зеркального отображения
         self.draw_cells()
-        print(np.where(self.get_desk()))
+        desk = self.get_desk()
+        for figure in desk[np.where(desk)]:
+            self.__draw_figure(figure)
 
 
 desk = VisualDesk()
