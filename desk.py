@@ -36,9 +36,9 @@ class Desk:
                 00wr - белая тура на позиции a1
         """
         for fig in positions:
-            fig = fig.upper()
+            fig = fig.lower()
             cords = list(map(int, fig[:2]))
-            self.__desk[*cords] = NOTATION.get(fig[3])(fig[2] == 'W',
+            self.__desk[*cords] = NOTATION.get(fig[3])(fig[2] == 'w',
                                                        size=size)
             self.__desk[*cords].coords = cords
 
@@ -51,6 +51,7 @@ class Desk:
 
         # Проверка на цвет фигуры
         if figure.color != self.__move_color:
+            print(figure.__repr__())
             raise TypeError('Figure color')
 
         # Взятие или ход
@@ -118,4 +119,5 @@ if __name__ == "__main__":
     desk = Desk()
     desk.move([1, 0], [2, 0])
     desk.move([6, 0], [5, 0])
+    desk.move([0, 1], [2, 2])
     print(desk)

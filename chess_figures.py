@@ -222,12 +222,12 @@ class King(Figure):
 
 
 NOTATION = {
-    "P": Pawn,
-    "R": Rook,
-    "N": Knight,
-    "B": Bishop,
-    "K": King,
-    "Q": Queen,
+    "p": Pawn,
+    "r": Rook,
+    "n": Knight,
+    "b": Bishop,
+    "k": King,
+    "q": Queen,
 }
 
 VOID = Void()
@@ -245,4 +245,5 @@ if __name__ == "__main__":
     B = Bishop(color=True)
     # print(B.possible_moves([0, 0]))
     Q = Queen(color=True)
-    print(Q.possible_moves([7, 7]))
+    # print(Q.possible_moves([7, 7]))
+    print(Q)
