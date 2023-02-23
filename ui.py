@@ -20,7 +20,7 @@ class VisualDesk(Desk, pg.Surface):
         self.display_figures()
 
     def draw_cells(self):
-        colors = ('#759455', '#eceed2')
+        colors = ('#eceed2', '#759455')
         for row in range(8):
             for col in range(8):
                 pg.draw.rect(self, colors[(row+col) % 2],
