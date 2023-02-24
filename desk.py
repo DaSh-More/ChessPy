@@ -104,6 +104,32 @@ class Desk:
         if self.__taken_figures[-1] is VOID:
             self.__taken_figures[-1].pop()
 
+    def real_possible_moves(self, coords):
+        figure = self.__desk[*coords]
+        possible_moves = figure.possible_moves(coords)
+        real_possible_moves = []
+        if figure is not NOTATION['p']:
+            for direction in possible_moves:
+                real_possible_moves.append([])
+                for cell in direction:
+                    if self.__desk[*cell].color != figure.color:
+                        real_possible_moves[possible_moves.index(direction)]\
+                            .append(cell)
+                        if self.__desk[*cell] is not VOID:
+                            break
+                    else:
+                        break
+        else:
+            real_possible_moves.append([])
+            for cell in possible_moves[0]:
+                if self.__desk[*cell] is VOID:
+                    real_possible_moves[0].append(cell)
+                else:
+                    break
+        for _ in range(real_possible_moves.count([])):
+            real_possible_moves.remove([])
+        return real_possible_moves
+
     def __is_check(self, color=None):
         # TODO Сделать проверку на шах
         ...
@@ -121,3 +147,4 @@ if __name__ == "__main__":
     desk.move([6, 0], [5, 0])
     desk.move([0, 1], [2, 2])
     print(desk)
+    print(desk.real_possible_moves([0, 6]))
