@@ -46,13 +46,8 @@ class Figure(pg.sprite.Sprite):
         if self.size:
             self.image = pg.transform.scale(self.image,
                                             (self.size, self.size))
-        self.__rect = None
 
     @property
-    def rect(self):
-        return self.__rect
-
-    @rect.getter
     def rect(self):
         return self.image.get_rect(
             center=(self.coords[1]*self.size + self.size/2,

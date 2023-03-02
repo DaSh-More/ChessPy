@@ -2,6 +2,7 @@ from loguru import logger
 from chess_figures import NOTATION, VOID
 import numpy as np
 
+# TODO Проверка что на начальной позиции не пересекаются поля
 default_position = '00wr 01wn 02wb 03wq 04wk 05wb 06wn 07wr\
                     10wp 11wp 12wp 13wp 14wp 15wp 16wp 17wp\
                     60bp 61bp 62bp 63bp 64bp 65bp 66bp 67bp\
