@@ -230,7 +230,7 @@ VOID = Void()
 if __name__ == "__main__":
     ...
     P = Pawn(color=False)
-    # print(P.possible_moves([6, 0]))
+    print(P.possible_moves([6, 0]))
     N = Knight(color=True)
     # print(N.possible_moves([4, 4]))
     K = King(color=True)
@@ -241,4 +241,4 @@ if __name__ == "__main__":
     # print(B.possible_moves([0, 0]))
     Q = Queen(color=True)
     # print(Q.possible_moves([7, 7]))
-    print(Q)
+    print(Q.color)
