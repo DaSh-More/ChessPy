@@ -107,23 +107,21 @@ class Desk:
     def real_possible_moves(self, coords):
         figure = self.__desk[*coords]
         possible_moves = figure.possible_moves(coords)
+        possible_takes = figure.possible_takes(coords)
+        possible_takes_new = []
+        for direction in possible_takes:
+            for cell in direction:
+                possible_takes_new.append(cell)
         real_possible_moves = []
-        if figure is not NOTATION['p']:
-            for direction in possible_moves:
-                real_possible_moves.append([])
-                for cell in direction:
-                    if self.__desk[*cell].color != figure.color:
-                        real_possible_moves[possible_moves.index(direction)]\
-                            .append(cell)
-                        if self.__desk[*cell] is not VOID:
-                            break
-                    else:
-                        break
-        else:
+        for direction in possible_moves:
             real_possible_moves.append([])
-            for cell in possible_moves[0]:
+            for cell in direction:
                 if self.__desk[*cell] is VOID:
-                    real_possible_moves[0].append(cell)
+                    real_possible_moves[-1].append(cell)
+                elif self.__desk[*cell].color != figure.color:
+                    if cell in possible_takes:
+                        real_possible_moves[-1].append(cell)
+                    break
                 else:
                     break
         for _ in range(real_possible_moves.count([])):
@@ -132,7 +130,18 @@ class Desk:
 
     def __is_check(self, color=None):
         # TODO Сделать проверку на шах
-        return False
+        coords = []
+        # for row in self.__desk:
+        #     for figure in row:
+        #         if (type(figure) == NOTATION['k']) and (figure.color == color):
+        #             print('Yes')
+        #             coords = [self.__desk.index(row), row.index(figure)]
+        coords = self.__desk[(type(self.__desk[:, 1]) == NOTATION['k'])
+                             & (self.__desk[:, 1].color == color)]
+        return coords
+
+    def is_check(self, color=None):
+        return Desk.__is_check(self, color)
 
     def __repr__(self) -> str:
         field = '  a b c d e f g h\n'
@@ -143,12 +152,8 @@ class Desk:
 
 if __name__ == "__main__":
     desk = Desk()
-    ks = 'abcdefgh'
-    while True:
-        print(desk)
-        mas = list(input('Move: '))
-        hods = ([int(mas[1])-1, ks.index(mas[0])],
-                [int(mas[3])-1, ks.index(mas[2])])
-        print(hods)
-
-        desk.move(*hods)
+    # desk.move([1, 0], [2, 0])
+    # desk.move([6, 0], [5, 0])
+    # desk.move([0, 1], [2, 2])
+    print(desk)
+    print(desk.is_check(color=True))
