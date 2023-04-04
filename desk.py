@@ -43,7 +43,7 @@ class Desk:
                                                        size=size)
             self.__desk[*cords].coords = cords
 
-    def move(self, fromCoords, toCoords):
+    def move(self, fromCoords: list, toCoords: list):
         # TODO Задать типы ошибок
         figure = self.__desk[*fromCoords]
         # Проверка на наличие фигуры
@@ -52,7 +52,6 @@ class Desk:
 
         # Проверка на цвет фигуры
         if figure.color != self.__move_color:
-            print(figure.__repr__())
             raise TypeError('Figure color')
 
         # Взятие или ход
@@ -80,7 +79,7 @@ class Desk:
                         self.__take(fromCoords, toCoords)
                         return True
                     # Иначе проверяем наличие фигуры
-                    if cell_figure.color is not VOID:
+                    if cell_figure is not VOID:
                         return False
         else:
             raise TypeError('to cell error')
@@ -133,19 +132,23 @@ class Desk:
 
     def __is_check(self, color=None):
         # TODO Сделать проверку на шах
-        ...
+        return False
 
     def __repr__(self) -> str:
-        field = ''
-        for i in self.__desk[::-1]:
-            field += ' '.join(map(str, i)) + '\n'
-        return field.strip()
+        field = '  a b c d e f g h\n'
+        for n, i in enumerate(self.__desk[::-1]):
+            field += f'{n} ' + ' '.join(map(str, i)) + '\n'
+        return field[:-1]
 
 
 if __name__ == "__main__":
     desk = Desk()
-    desk.move([1, 0], [2, 0])
-    desk.move([6, 0], [5, 0])
-    desk.move([0, 1], [2, 2])
-    print(desk)
-    print(desk.real_possible_moves([0, 6]))
+    ks = 'abcdefgh'
+    while True:
+        print(desk)
+        mas = list(input('Move: '))
+        hods = ([int(mas[1])-1, ks.index(mas[0])],
+                [int(mas[3])-1, ks.index(mas[2])])
+        print(hods)
+
+        desk.move(*hods)

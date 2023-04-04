@@ -23,10 +23,6 @@ class VisualDesk(Desk, pg.Surface):
         self.__select_figure = None
         self.display_figures()
 
-    # @property
-    # def rect(self):
-    #     return self.get_rect()
-
     def draw_cells(self):
         colors = ('#eceed2', '#759455')
         for row in range(8):
@@ -58,12 +54,10 @@ class VisualDesk(Desk, pg.Surface):
             self.__select_figure = False
 
 
-left, top = 20, 50
-desk = VisualDesk((left, top))
-screen.blit(desk, (left, top))
-
-
 def main():
+    left, top = 20, 50
+    desk = VisualDesk((left, top))
+    screen.blit(desk, (left, top))
     clock = pg.time.Clock()
     while True:
         pg.display.update()
