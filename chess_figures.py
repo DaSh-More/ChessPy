@@ -229,15 +229,9 @@ VOID = Void()
 
 if __name__ == "__main__":
     ...
-<<<<<<< HEAD
-    # P = Pawn(color=False)
-    # print(P.possible_moves([6, 0]))
-    # N = Knight(color=True)
-=======
     P = Pawn(color=False)
     print(P.possible_moves([6, 0]))
     N = Knight(color=True)
->>>>>>> dbd6c8d9c94dd99464265dd957ab683e0957e581
     # print(N.possible_moves([4, 4]))
     # K = King(color=True)
     # print(K.possible_moves([0, 5]))

@@ -130,6 +130,7 @@ class Desk:
 
     def __is_check(self, color=None):
         # TODO Сделать проверку на шах
+        return False
         coords = []
         # for row in self.__desk:
         #     for figure in row:
@@ -146,7 +147,7 @@ class Desk:
     def __repr__(self) -> str:
         field = '  a b c d e f g h\n'
         for n, i in enumerate(self.__desk[::-1]):
-            field += f'{n} ' + ' '.join(map(str, i)) + '\n'
+            field += f'{8-n} ' + ' '.join(map(str, i)) + '\n'
         return field[:-1]
 
 
